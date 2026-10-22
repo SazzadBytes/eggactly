@@ -1,4 +1,8 @@
+<p align="center"><img src="assets/logo.svg" alt="Eggactly" width="520"></p>
+
 # 🥚 Eggactly
+
+**Live:** https://sazzadbytes.github.io/eggactly/
 
 **Anyone can boil an egg. Boiling a perfect one is rocket science.**
 
@@ -17,5 +21,9 @@ Eggactly works out exactly how long to boil your eggs, using physics instead of 
   `t = 0.451 · M^(2/3) · ln[0.76 · (T_water − T_egg) / (T_water − T_yolk)]` (minutes, M in grams)
 - **Thermal shock**: cold eggs cool the water by `ΔT = C_eggs·(T_w − T_0) / (C_water + C_eggs)`.
 - **Flame recovery**: the stove (at ~45% efficiency) needs `E / P` seconds to win that heat back; the eggs cook at roughly half speed during that window.
+
+## The logo
+
+The logo (`assets/logo.svg`) is drawn entirely in code: the letters are Anton glyphs converted to vector paths, and both eggs are SVG shapes with gradients and a gentle wobble animation. Regenerate it with `tools/build-logo.js`.
 
 Plain HTML, CSS and JavaScript — no build step. Hosted on GitHub Pages.
