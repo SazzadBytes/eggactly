@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Eggactly — Boil the perfect egg with math</title>
+  <meta name="description" content="Anyone can boil an egg. Boiling a perfect one is rocket science. Eggactly uses thermodynamics to tell you exactly how long to boil your eggs." />
+  <meta name="theme-color" content="#FCA70A" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-dots" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="topbar" id="topbar" hidden>
+      <button class="icon-btn" id="backBtn" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <img src="assets/logo.png" alt="Eggactly" class="mini-logo" />
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    </header>
+
+    <!-- 0: Welcome -->
+    <section class="screen active" data-screen="0">
+      <div class="hero">
+        <img src="assets/logo.png" alt="Eggactly" class="logo" />
+        <p class="tagline">Anyone can boil an egg.<br /><strong>Boiling a perfect one is rocket science.</strong></p>
+        <div class="hero-egg" aria-hidden="true">
+          <svg viewBox="0 0 120 150" class="wobble">
+            <defs>
+              <radialGradient id="shellG" cx="35%" cy="30%" r="75%">
+                <stop offset="0" stop-color="#F6B48C"/><stop offset=".6" stop-color="#F09E6F"/><stop offset="1" stop-color="#D9805A"/>
+              </radialGradient>
+            </defs>
+            <ellipse cx="60" cy="142" rx="34" ry="5" fill="#000" opacity=".08"/>
+            <path d="M60 8C90 8 108 62 108 90c0 30-21 48-48 48S12 120 12 90C12 62 30 8 60 8z" fill="url(#shellG)"/>
+            <path d="M40 40c6-12 14-18 18-18" stroke="#fff" stroke-opacity=".6" stroke-width="7" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <button class="btn primary big" data-next>Let's do the math <span aria-hidden="true">→</span></button>
+        <p class="fineprint">Powered by heat transfer, Fourier &amp; a little love.</p>
+      </div>
+    </section>
+
+    <!-- 1: Doneness -->
+    <section class="screen" data-screen="1">
+      <p class="step-label">Step 1 of 4</p>
+      <h1>How do you like it?</h1>
+      <p class="lead">Pick your perfect yolk.</p>
+      <div class="cards three" role="radiogroup" aria-label="Doneness">
+        <button class="card choice" data-done="soft" role="radio" aria-checked="false">
+          <svg viewBox="0 0 100 120" class="cut-egg"><use href="#eggWhite"/>
+            <circle cx="50" cy="74" r="23" fill="url(#yolkSoft)"/>
+            <path d="M38 92c2 8 0 14 4 16s6-6 6-12" fill="#FDB515"/>
+            <ellipse cx="43" cy="66" rx="6" ry="4" fill="#fff" opacity=".55"/></svg>
+          <span class="card-title">Soft</span>
+          <span class="card-sub">Runny, dippy yolk</span>
+          <span class="chip">yolk 64°C</span>
+        </button>
+        <button class="card choice" data-done="half" role="radio" aria-checked="false">
+          <svg viewBox="0 0 100 120" class="cut-egg"><use href="#eggWhite"/>
+            <circle cx="50" cy="74" r="23" fill="url(#yolkHalf)"/>
+            <ellipse cx="44" cy="67" rx="5" ry="3" fill="#fff" opacity=".4"/></svg>
+          <span class="card-title">Half</span>
+          <span class="card-sub">Jammy, custardy</span>
+          <span class="chip">yolk 70°C</span>
+        </button>
+        <button class="card choice" data-done="hard" role="radio" aria-checked="false">
+          <svg viewBox="0 0 100 120" class="cut-egg"><use href="#eggWhite"/>
+            <circle cx="50" cy="74" r="23" fill="url(#yolkHard)"/></svg>
+          <span class="card-title">Hard</span>
+          <span class="card-sub">Firm, fully set</span>
+          <span class="chip">yolk 80°C</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2: Eggs -->
+    <section class="screen" data-screen="2">
+      <p class="step-label">Step 2 of 4</p>
+      <h1>Your eggs</h1>
+      <p class="lead">Size matters. A lot. (It's to the power of ⅔.)</p>
+
+      <div class="field">
+        <label class="field-label">Egg size</label>
+        <div class="segmented" id="sizeSeg">
+          <button data-size="S"><b>S</b><small>48 g</small></button>
+          <button data-size="M"><b>M</b><small>55 g</small></button>
+          <button data-size="L"><b>L</b><small>63 g</small></button>
+          <button data-size="XL"><b>XL</b><small>73 g</small></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">How many eggs?</label>
+        <div class="stepper">
+          <button id="countMinus" aria-label="Fewer eggs">−</button>
+          <div class="count-display"><span id="countVal">2</span><small id="countEggs">eggs</small></div>
+          <button id="countPlus" aria-label="More eggs">+</button>
+        </div>
+        <div class="egg-row" id="eggRow" aria-hidden="true"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Starting temperature</label>
+        <div class="segmented two" id="startSeg">
+          <button data-start="fridge"><b>🧊 Fridge</b><small>4 °C</small></button>
+          <button data-start="room"><b>🌤 Room</b><small>20 °C</small></button>
+        </div>
+      </div>
+
+      <button class="btn primary full" data-next>Continue</button>
+    </section>
+
+    <!-- 3: Water -->
+    <section class="screen" data-screen="3">
+      <p class="step-label">Step 3 of 4</p>
+      <h1>The water</h1>
+      <p class="lead">More water = less temperature drop when the eggs go in.</p>
+
+      <div class="pot-wrap">
+        <svg viewBox="0 0 260 190" class="pot" id="potSvg" aria-hidden="true">
+          <defs>
+            <clipPath id="potClip"><path d="M30 30h200v120a25 25 0 0 1-25 25H55a25 25 0 0 1-25-25z"/></clipPath>
+            <linearGradient id="waterG" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#9ED8F5"/><stop offset="1" stop-color="#5DB5E6"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="44" width="30" height="12" rx="6" fill="#7A8794"/>
+          <rect x="226" y="44" width="30" height="12" rx="6" fill="#7A8794"/>
+          <g clip-path="url(#potClip)">
+            <rect x="30" y="30" width="200" height="145" fill="#EEF2F5"/>
+            <rect id="waterRect" x="30" y="100" width="200" height="80" fill="url(#waterG)"/>
+            <g id="potEggs"></g>
+            <rect id="waterTop" x="30" y="100" width="200" height="80" fill="#5DB5E6" opacity=".18"/>
+          </g>
+          <path d="M30 30h200v120a25 25 0 0 1-25 25H55a25 25 0 0 1-25-25z" fill="none" stroke="#5B6875" stroke-width="6"/>
+          <rect x="22" y="24" width="216" height="10" rx="5" fill="#5B6875"/>
+        </svg>
+        <div class="pot-readout"><span id="waterVal">1.5</span><small>litres</small></div>
+      </div>
+      <p class="warn" id="coverWarn" hidden>⚠️ Not enough water — your eggs aren't fully covered.</p>
+
+      <div class="field">
+        <label class="field-label" for="waterRange">Water amount</label>
+        <input type="range" id="waterRange" min="0.5" max="5" step="0.1" value="1.5" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="altRange">Altitude <span class="muted">(water boils cooler up high)</span></label>
+        <input type="range" id="altRange" min="0" max="4000" step="50" value="0" />
+        <div class="range-meta"><span id="altVal">0 m</span><span id="bpVal">boils at 100.0 °C</span></div>
+      </div>
+
+      <button class="btn primary full" data-next>Continue</button>
+    </section>
+
+    <!-- 4: Flame -->
+    <section class="screen" data-screen="4">
+      <p class="step-label">Step 4 of 4</p>
+      <h1>The flame</h1>
+      <p class="lead">How hard is your stove working?</p>
+      <div class="cards three" role="radiogroup" aria-label="Flame">
+        <button class="card choice flame-card" data-flame="low" role="radio" aria-checked="false">
+          <svg viewBox="0 0 60 80" class="flame f-low"><use href="#flameShape"/></svg>
+          <span class="card-title">Low</span><span class="card-sub">Gentle simmer</span><span class="chip">~1.2 kW</span>
+        </button>
+        <button class="card choice flame-card" data-flame="medium" role="radio" aria-checked="false">
+          <svg viewBox="0 0 60 80" class="flame f-med"><use href="#flameShape"/></svg>
+          <span class="card-title">Medium</span><span class="card-sub">Steady boil</span><span class="chip">~2.0 kW</span>
+        </button>
+        <button class="card choice flame-card" data-flame="high" role="radio" aria-checked="false">
+          <svg viewBox="0 0 60 80" class="flame f-high"><use href="#flameShape"/></svg>
+          <span class="card-title">High</span><span class="card-sub">Rolling boil</span><span class="chip">~2.8 kW</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 5: Calculation -->
+    <section class="screen" data-screen="5">
+      <p class="step-label" id="calcLabel">Crunching numbers…</p>
+      <h1>The science bit</h1>
+      <div class="calc" id="calc"></div>
+      <button class="btn primary full" id="toResult" hidden>Show my time <span aria-hidden="true">→</span></button>
+    </section>
+
+    <!-- 6: Result + timer -->
+    <section class="screen" data-screen="6">
+      <div class="result">
+        <p class="step-label" id="resultLabel">Your perfect egg needs</p>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 220 220" class="ring">
+            <circle cx="110" cy="110" r="96" class="ring-bg"/>
+            <circle cx="110" cy="110" r="96" class="ring-fg" id="ringFg"/>
+          </svg>
+          <div class="ring-center">
+            <div class="bubbles" id="bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="time" id="timeDisplay">0:00</div>
+            <div class="time-sub" id="timeSub">minutes</div>
+          </div>
+        </div>
+        <p class="summary" id="summary"></p>
+        <div class="timer-btns">
+          <button class="btn primary big" id="startBtn">▶ Start timer</button>
+          <button class="btn ghost" id="resetBtn" hidden>Reset</button>
+        </div>
+        <p class="hint" id="hint">Drop the eggs in <b>once the water is boiling</b>, then hit start.</p>
+        <div class="done-card" id="doneCard" hidden>
+          <h2>🥚 Eggactly done!</h2>
+          <p>Move them straight into ice water for 2 minutes to stop the cooking.</p>
+        </div>
+        <button class="btn link" id="restartBtn">↺ Boil another batch</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- shared SVG symbols -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="yolkSoft" cx="40%" cy="38%" r="70%"><stop offset="0" stop-color="#FFD24A"/><stop offset="1" stop-color="#F7A21B"/></radialGradient>
+      <radialGradient id="yolkHalf" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#F59E0B"/><stop offset=".55" stop-color="#F7B733"/><stop offset="1" stop-color="#F5C04A"/></radialGradient>
+      <radialGradient id="yolkHard" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#F7D774"/><stop offset="1" stop-color="#EFC85A"/></radialGradient>
+      <linearGradient id="flameG" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#2F7BFF"/><stop offset=".35" stop-color="#FCA70A"/><stop offset="1" stop-color="#FF5A1F"/></linearGradient>
+      <symbol id="eggWhite" viewBox="0 0 100 120">
+        <path d="M50 4c25 0 42 44 42 70 0 26-19 42-42 42S8 100 8 74C8 48 25 4 50 4z" fill="#F4EFE6"/>
+        <path d="M50 4c25 0 42 44 42 70 0 26-19 42-42 42" fill="none" stroke="#E2D9CB" stroke-width="3"/>
+      </symbol>
+      <symbol id="flameShape" viewBox="0 0 60 80">
+        <path d="M30 4c4 14 20 22 20 44a20 20 0 0 1-40 0c0-10 6-16 10-22 1 6 4 10 8 10-4-12 0-24 2-32z" fill="url(#flameG)"/>
+        <path d="M30 40c2 6 9 10 9 18a9 9 0 0 1-18 0c0-6 5-10 9-18z" fill="#FFE08A"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <script src="app.js"></script>
+</body>
+</html>
